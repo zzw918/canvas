@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>使用js画出抛物线</title>
+    <style>
+        #parabolic {
+            display: block;
+            box-shadow: 0 0 5px blue;
+            background: rgba(0, 0, 255, 0.1);
+            margin: 200px auto 10px auto;
+        }
+        .button-wrap {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <canvas id = "parabolic" width="300" height="300"></canvas>
+    <div class="button-wrap">
+        <button class="startBtn">开始</button>
+        <button class="stopBtn">暂停</button>
+    </div>
+<script>
+    //  TODO：使用js画出一个抛物线，然后小球可以在抛物线上运动，有两个按钮可以使小球继续运动或者停止运动
+
+window.addEventListener("load", function() {
+
+    var myCanvas = document.getElementById("parabolic");
+    var parabolic = myCanvas.getContext("2d");
+
+    // 首先，将贝塞尔曲线画出来
+    drawCurve();
+    function drawCurve() {
+        parabolic.beginPath();
+        parabolic.moveTo(20, 20);
+        parabolic.strokeStyle = "red";
+        parabolic.bezierCurveTo(110, 300, 200, 300, 280, 20);
+        parabolic.stroke();
+    }
+
+    // 画出一个小球，如果没有指定，就默认在(20, 20)
+    drawBall();
+    function drawBall(x, y) {
+
+        // 当每次画小球的时候，我们都清除画布，否则小球会越来越多
+        parabolic.clearRect(0, 0, 300, 300);
+        drawCurve();
+
+        if (x === undefined) {
+            x = 20;
+        }
+        if (y === undefined) {
+            y = 20;
+        }
+        parabolic.beginPath();
+        parabolic.fillStyle = "green";
+        parabolic.arc(x, y, 10, 0, 2*Math.PI, false);
+        parabolic.fill();
+    }
+
+    // 下面是画出贝塞尔曲线的四个点，根据这四个点我们可以确定贝塞尔曲线上的路径
+    // P0 (20, 20)
+    // P1 (110, 300)
+    // P2 (200, 300)
+    // P3 (280, 20)
+    var startBtn = document.querySelector(".startBtn"),
+        stopBtn = document.querySelector(".stopBtn"),
+        rightTimer, 
+        leftTimer;
+
+    startBtn.addEventListener("click", function() {
+        console.log(leftTimer,rightTimer);
+        if (leftTimer == undefined && rightTimer == undefined) {
+            console.log("2");
+            rightTimer = setInterval(rightPlay, 16);
+        }else if (leftTimer === "stop") {
+            console.log("3");
+
+            rightTimer = setInterval(leftPlay, 16);
+        }else if (rightTimer === "stop") {
+            console.log("4");
+            rightTimer = setInterval(rightPlay, 16);
+        }else if(leftTimer === "bad" || rightTimer === "bad" ) {
+      
+        }
+    }, false);
+
+    stopBtn.addEventListener("click", function() {
+        if (leftTimer === "bad") {
+            clearInterval(rightTimer);
+            rightTimer = "stop";
+        } else {
+            clearInterval(leftTimer);
+            leftTimer = "stop";
+        }
+        console.log(leftTimer,rightTimer);
+    }, false);
+
+
+    var t = 0;
+    function calPoint() {
+        x = 20*Math.pow((1 - t/1000),3) + 3*110*(t/1000)*Math.pow((1-t/1000), 2) + 3*200*Math.pow((t/1000), 2)*(1-t/1000) + 280*Math.pow((t/1000), 3);
+        y = 20*Math.pow((1 - t/1000),3) + 3*300*(t/1000)*Math.pow((1-t/1000), 2) + 3*300*Math.pow((t/1000), 2)*(1-t/1000) + 20*Math.pow((t/1000), 3);
+    }
+
+    function rightPlay() {
+        console.log("rightPlay",t);
+        console.log(rightTimer); // 1
+        leftTimer = 'bad';
+        t += 5;
+        if (t === 1000) {
+            clearInterval(rightTimer);
+            leftTimer = setInterval(leftPlay, 16);
+
+        }
+        calPoint();
+        drawBall(x, y);
+    }
+
+    function leftPlay() {   
+        console.log("leftPlay",t);
+        console.log(leftTimer); // 1
+        rightTimer = "bad";
+        t -= 5;
+        if (t === 0) {
+            clearInterval(leftTimer);
+            rightTimer = setInterval(rightPlay, 16);
+        }
+
+        calPoint();
+        drawBall(x, y);
+    }
+
+},false);
+
+</script>
+    
+</body>
+</html>
