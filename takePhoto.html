@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>demo01</title>
+</head>
+<body>
+ <video id="myVideo" width="500" height="400" src=""></video>
+ <button id="snapScreen">截屏</button>
+ <canvas id="myCanvas" width="500" height="400"></canvas>
+ <script>
+  var myVideo = document.getElementById('myVideo');
+  navigator.mediaDevices.getUserMedia({
+    video: true
+  }).then(function (mediaStream) {
+    myVideo.srcObject = mediaStream;
+    myVideo.onloadedmetadata = function () {
+      myVideo.controls = "controls";
+      myVideo.play();
+    }
+  });
+  var snapScreen = document.getElementById('snapScreen'),
+      canvas = document.getElementById('myCanvas').getContext('2d');
+  snapScreen.onclick = function () {
+    canvas.drawImage(myVideo, 0, 0);
+  }
+ </script>
+</body>
+</html>
