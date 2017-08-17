@@ -1,4 +1,5 @@
-###使用canvas制作的有意思的demo###
+使用canvas制作的有意思的demo
+
 
 ***
 canvas时钟[http://www.cnblogs.com/zhuzhenwei918/p/6058768.html]
